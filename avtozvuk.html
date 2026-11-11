@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Резонанс — студия автозвука</title>
+<meta name="description" content="Установка и настройка автозвука: акустика, усилители, сабвуферы, шумоизоляция. Бесплатное прослушивание.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e1114;      /* корпус усилителя */
+  --alu:#e4e7ea;      /* алюминий */
+  --mid:#69727b;      /* второстепенный текст */
+  --line:#c3c8cd;    /* границы на светлом */
+  --hot:#ff4a1c;      /* сигнальный оранжевый */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--alu);color:var(--ink);font-family:Manrope,system-ui,sans-serif;font-size:17px;line-height:1.6}
+h1,h2,h3,.logo,.btn{font-family:Unbounded,Impact,sans-serif}
+a{color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:3px solid var(--hot);outline-offset:3px}
+h2{font-size:clamp(26px,4.4vw,42px);line-height:1.15;font-weight:800;margin-bottom:12px;max-width:16em}
+.lead{color:var(--mid);max-width:36em;margin-bottom:40px}
+section{padding:92px 0}
+
+/* кнопки */
+.btn{display:inline-block;background:var(--hot);color:#fff;border:0;padding:15px 26px;border-radius:999px;font-size:14px;font-weight:800;text-decoration:none;cursor:pointer}
+.btn:hover{background:#ff6a42}
+.btn.ghost{background:transparent;color:inherit;border:2px solid currentColor}
+.btn.ghost:hover{background:#ffffff1a}
+
+/* шапка и главный экран */
+.dark{background:var(--ink);color:var(--alu)}
+header{border-bottom:1px solid #2a3036}
+.bar{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{font-weight:800;font-size:20px;text-decoration:none}
+.logo b{color:var(--hot)}
+.bar nav{display:flex;align-items:center;gap:26px;font-size:15px}
+.bar nav a:not(.btn){text-decoration:none;color:#9aa3ab}
+.bar nav a:not(.btn):hover{color:#fff}
+.bar .btn{padding:10px 18px;font-size:12px}
+
+.hero{padding:56px 0 0;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center}
+.bass{transform-origin:left center;transform:scale(calc(1 + var(--k,0) * .05));will-change:transform}
+h1{font-size:clamp(36px,6.6vw,78px);line-height:1.02;font-weight:800;margin-bottom:22px}
+h1 em{font-style:normal;color:var(--hot)}
+.hero p{color:#9aa3ab;max-width:28em;margin-bottom:28px}
+.hero .row{display:flex;flex-wrap:wrap;gap:12px}
+.hint{margin-top:14px;font-size:14px;color:#69727b}
+.cone{justify-self:center;width:min(100%,400px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,var(--hot) 0 8%,#0e1114 8.6% 11%,transparent 11.6%),
+             repeating-radial-gradient(circle,#1b2025 0 16px,#12161a 16px 18px);
+  box-shadow:0 0 0 12px #232a30,0 0 0 14px #39424a,0 0 calc(30px + var(--k,0) * 90px) calc(var(--k,0) * 10px) #ff4a1c55;
+  transform:scale(calc(1 + var(--k,0) * .09))}
+.eq{display:flex;align-items:flex-end;gap:5px;height:120px;margin-top:56px}
+.eq i{flex:1;height:100%;background:var(--hot);border-radius:3px 3px 0 0;transform-origin:bottom;transform:scaleY(.1)}
+.eq i:nth-child(3n){background:#ff7a55}
+
+/* конструктор системы */
+.build{display:grid;grid-template-columns:320px 1fr;gap:32px;align-items:start}
+.tiers{display:grid;gap:12px}
+.tier{text-align:left;font:inherit;background:transparent;border:2px solid var(--line);border-radius:14px;padding:18px 20px;cursor:pointer;color:var(--ink)}
+.tier strong{display:block;font-family:Unbounded,sans-serif;font-size:16px}
+.tier span{color:var(--mid);font-size:14px}
+.tier[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--alu)}
+.tier[aria-pressed="true"] span{color:#9aa3ab}
+.panel{background:#fff;border-radius:18px;padding:32px;border:1px solid var(--line)}
+.price{font-family:Unbounded,sans-serif;font-weight:800;font-size:clamp(34px,5vw,54px);line-height:1}
+.price small{font-size:16px;font-weight:500;color:var(--mid)}
+.panel h3{font-size:20px;margin:18px 0 14px}
+.panel ul{list-style:none;display:grid;gap:10px}
+.panel li{padding-left:28px;position:relative}
+.panel li::before{content:"";position:absolute;left:0;top:.55em;width:14px;height:6px;background:var(--hot);border-radius:2px}
+.meter{display:flex;gap:4px;margin-top:24px}
+.meter i{flex:1;height:10px;border-radius:2px;background:var(--line)}
+.meter i.on{background:var(--hot)}
+.meter-label{font-size:13px;color:var(--mid);margin-top:8px}
+
+/* этапы */
+.steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:0;counter-reset:s;border-top:3px solid var(--ink)}
+.steps li{counter-increment:s;padding:20px 22px 0 0}
+.steps li::before{content:counter(s);display:block;font-family:Unbounded,sans-serif;font-weight:800;font-size:38px;color:var(--hot);margin-bottom:8px}
+.steps b{display:block;margin-bottom:4px}
+.steps span{color:var(--mid);font-size:15px}
+
+/* работы */
+.works{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.work{border-top:4px solid var(--hot);background:#fff;padding:22px 24px 26px;border-radius:0 0 14px 14px}
+.work h3{font-size:18px;margin-bottom:6px}
+.work p{color:var(--mid);font-size:15px}
+.work .res{margin-top:14px;font-weight:800;font-size:15px}
+
+/* контакты */
+.cta{text-align:left}
+.cta h2{color:var(--alu);max-width:14em}
+.cta .lead{color:#9aa3ab}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px;padding-top:28px;border-top:1px solid #2a3036;font-size:15px}
+.info span{display:block;color:#69727b;font-size:13px}
+.info a{text-decoration:none}
+footer.site{padding:22px 0;text-align:center;font-size:14px;color:#69727b;background:var(--ink);border-top:1px solid #2a3036}
+
+@media(max-width:860px){
+  section{padding:64px 0}
+  .hero .wrap,.build{grid-template-columns:1fr}
+  .cone{width:min(70vw,260px);order:-1}
+  .bar nav a:not(.btn){display:none}
+  .steps,.works,.info{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){.steps,.works,.info{grid-template-columns:1fr}.eq{height:90px;gap:3px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bass,.cone{transform:none}}
+</style>
+</head>
+<body>
+
+<div class="dark hero" id="stage">
+  <header>
+    <div class="wrap bar">
+      <a href="#" class="logo">РЕЗОНАНС<b>.</b></a>
+      <nav>
+        <a href="#build">Система</a>
+        <a href="#process">Как работаем</a>
+        <a href="#works">Работы</a>
+        <a href="https://t.me/YOUR_BOT_USERNAME" class="btn" target="_blank" rel="noopener">Записаться</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap" style="padding-top:56px">
+    <div class="bass">
+      <h1>Автозвук, который <em>чувствуешь</em> грудью</h1>
+      <p>Подберём, установим и настроим акустику под вашу машину и вашу музыку. Без лишних блоков за ваши деньги и без срезанных углов.</p>
+      <div class="row">
+        <button class="btn" id="play" aria-pressed="false">Включить бас</button>
+        <a href="https://t.me/YOUR_BOT_USERNAME" class="btn ghost" target="_blank" rel="noopener">Записаться на прослушивание</a>
+      </div>
+      <p class="hint">Звук синтезируется прямо в браузере. На ноутбуке нижний бас не слышен, лучше включить на колонках или в наушниках.</p>
+    </div>
+    <div class="cone" role="img" aria-label="Сабвуфер, который пульсирует в такт басу"></div>
+  </div>
+  <div class="wrap"><div class="eq" aria-hidden="true"></div></div>
+</div>
+
+<main>
+  <section id="build">
+    <div class="wrap">
+      <h2>Соберите свою систему</h2>
+      <p class="lead">Выберите уровень, и мы покажем, что входит в комплект. Точную цену назовём после осмотра машины и прослушивания.</p>
+      <div class="build">
+        <div class="tiers" role="group" aria-label="Уровень системы">
+          <button class="tier" aria-pressed="true" data-i="0"><strong>Старт</strong><span>Честный апгрейд штатной акустики</span></button>
+          <button class="tier" aria-pressed="false" data-i="1"><strong>Громко</strong><span>Полноценная система с сабвуфером</span></button>
+          <button class="tier" aria-pressed="false" data-i="2"><strong>Без компромиссов</strong><span>Звук концертного зала в салоне</span></button>
+        </div>
+        <div class="panel" aria-live="polite">
+          <div class="price"><small>от </small><span id="p-price"></span></div>
+          <h3 id="p-title"></h3>
+          <ul id="p-list"></ul>
+          <div class="meter" id="p-meter" aria-hidden="true"></div>
+          <div class="meter-label">Уровень звука</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="process" style="padding-top:0">
+    <div class="wrap">
+      <h2>От первого звонка до настройки</h2>
+      <p class="lead">Четыре шага, и на каждом вы знаете, что происходит с вашей машиной.</p>
+      <ol class="steps">
+        <li><b>Слушаем вас</b><span>Какая музыка, какая громкость, какой бюджет. Осматриваем машину.</span></li>
+        <li><b>Подбираем</b><span>Предлагаем комплект под задачу. Без лишнего и без переплаты.</span></li>
+        <li><b>Устанавливаем</b><span>Через штатные разъёмы, без резки проводки. Всё прячем под обшивку.</span></li>
+        <li><b>Настраиваем</b><span>Выставляем звук по измерениям и на слух. Отдаём с гарантией.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="works" style="padding-top:0">
+    <div class="wrap">
+      <h2>Недавние работы</h2>
+      <p class="lead">Короткие истории: что было, что сделали и что получилось.</p>
+      <div class="works">
+        <article class="work"><h3>Volkswagen Golf VII</h3><p>Штатная система хрипела на средней громкости. Заменили динамики в дверях, добавили усилитель и шумоизоляцию.</p><p class="res">Чистый звук без хрипа до высокой громкости</p></article>
+        <article class="work"><h3>BMW 3 серии</h3><p>Хотели бас, но без потери багажника. Поставили тонкий сабвуфер под сиденье и настроили кроссовер.</p><p class="res">Бас есть, багажник свободен</p></article>
+        <article class="work"><h3>Toyota Camry</h3><p>Полная система с процессором: компонентная акустика, 5 каналов усиления, сабвуфер в корпусе под багажник.</p><p class="res">Сцена впереди, а не в дверях</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="dark cta" id="contacts">
+    <div class="wrap">
+      <h2>Приезжайте послушать, как может звучать ваша машина</h2>
+      <p class="lead">Первое прослушивание и осмотр бесплатно. Запишитесь в Telegram: бот покажет свободное время.</p>
+      <div class="row" style="display:flex;flex-wrap:wrap;gap:12px">
+        <a href="https://t.me/YOUR_BOT_USERNAME" class="btn" target="_blank" rel="noopener">Записаться в Telegram</a>
+        <a href="tel:+4312345678" class="btn ghost">Позвонить</a>
+      </div>
+      <div class="info">
+        <div><span>Адрес</span>Muster Straße 12, 1100 Wien</div>
+        <div><span>Телефон</span><a href="tel:+4312345678">+43 1 234 56 78</a></div>
+        <div><span>Часы работы</span>Пн–Сб 10:00–19:00</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">© 2026 Студия автозвука «Резонанс»</footer>
+
+<script>
+/* ---------- Конструктор системы ---------- */
+const tiers = [
+  {price:"290 €", title:"Старт: штатная акустика, но лучше", level:2,
+   items:["Замена динамиков в передних дверях","Шумоизоляция дверей","Настройка баланса и тембра","Гарантия на работу 1 год"]},
+  {price:"890 €", title:"Громко: полноценная система", level:4,
+   items:["Компонентная акустика спереди","Усилитель на 4 канала","Сабвуфер в готовом корпусе","Шумоизоляция дверей и багажника","Настройка по микрофону"]},
+  {price:"2 400 €", title:"Без компромиссов: звук зала", level:5,
+   items:["Многополосная система со звуковым процессором","Отдельный усилитель на каждую полосу","Сабвуфер в корпусе под ваш багажник","Полная шумоизоляция салона","Тонкая настройка и контрольное прослушивание"]}
+];
+const $ = id => document.getElementById(id);
+function showTier(i){
+  const t = tiers[i];
+  $("p-price").textContent = t.price;
+  $("p-title").textContent = t.title;
+  $("p-list").innerHTML = t.items.map(x => "<li>" + x + "</li>").join("");
+  $("p-meter").innerHTML = Array.from({length:5}, (_, n) => "<i class='" + (n < t.level ? "on" : "") + "'></i>").join("");
+  document.querySelectorAll(".tier").forEach(b => b.setAttribute("aria-pressed", b.dataset.i == i));
+}
+document.querySelectorAll(".tier").forEach(b => b.addEventListener("click", () => showTier(+b.dataset.i)));
+showTier(0);
+
+/* ---------- Демо баса (Web Audio) ---------- */
+const eq = document.querySelector(".eq");
+for (let i = 0; i < 40; i++) eq.appendChild(document.createElement("i"));
+const bars = [...eq.children], stage = $("stage"), btn = $("play");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let ctx, master, analyser, data, hatBuf, timer, step = 0, on = false;
+
+function tone(f0, f1, t, dur, vol){
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.frequency.setValueAtTime(f0, t);
+  o.frequency.exponentialRampToValueAtTime(f1, t + dur * .4);
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.001, t + dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + dur);
+}
+function hat(t){
+  const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+  s.buffer = hatBuf; f.type = "highpass"; f.frequency.value = 7000;
+  g.gain.setValueAtTime(.2, t); g.gain.exponentialRampToValueAtTime(.001, t + .06);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t);
+}
+function tick(){
+  const t = ctx.currentTime + .03, s = step % 8;
+  if ([0,3,4,6].includes(s)) tone(150, 42, t, .45, 1);
+  if (s === 0) tone(55, 55, t, .7, .55);
+  if (s === 4) tone(49, 49, t, .7, .55);
+  if (s % 2) hat(t);
+  step++;
+}
+function start(){
+  if (!ctx){
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain(); master.gain.value = .6;
+    analyser = ctx.createAnalyser(); analyser.fftSize = 512; analyser.smoothingTimeConstant = .7;
+    master.connect(analyser); analyser.connect(ctx.destination);
+    data = new Uint8Array(analyser.frequencyBinCount);
+    hatBuf = ctx.createBuffer(1, ctx.sampleRate * .1, ctx.sampleRate);
+    const d = hatBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  ctx.resume(); step = 0; tick(); timer = setInterval(tick, 250);
+  on = true; btn.textContent = "Выключить"; btn.setAttribute("aria-pressed", "true");
+}
+function stop(){
+  clearInterval(timer); on = false;
+  btn.textContent = "Включить бас"; btn.setAttribute("aria-pressed", "false");
+}
+btn.addEventListener("click", () => on ? stop() : start());
+
+function frame(){
+  if (on){
+    analyser.getByteFrequencyData(data);
+    stage.style.setProperty("--k", ((data[0] + data[1] + data[2]) / 765).toFixed(3));
+    bars.forEach((b, i) => {
+      const bin = Math.floor(1 + Math.pow(i / (bars.length - 1), 1.8) * 110);
+      const v = Math.min(1, data[bin] / 255 * (1 + i / 14));
+      b.style.transform = "scaleY(" + (.05 + v * .95) + ")";
+    });
+  } else if (!reduce){
+    const t = performance.now() / 900;
+    stage.style.setProperty("--k", 0);
+    bars.forEach((b, i) => b.style.transform = "scaleY(" + (.12 + .06 * Math.sin(t + i * .5)) + ")");
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>
